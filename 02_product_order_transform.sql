@@ -1,4 +1,3 @@
--- Insert product dimension
 INSERT INTO dim_products (product_id, product_name, category)
 SELECT DISTINCT
     p.product_id,
@@ -6,7 +5,6 @@ SELECT DISTINCT
     p.category
 FROM src_products p;
 
--- Insert order staging with joins
 INSERT INTO stg_orders (
     order_id, customer_id, product_id, order_date, quantity, total_amount
 )
@@ -21,7 +19,6 @@ FROM src_orders o
 JOIN src_products p
     ON o.product_id = p.product_id;
 
--- Merge to update changed quantities or amounts
 MERGE INTO stg_orders t
 USING src_orders s
 ON t.order_id = s.order_id
