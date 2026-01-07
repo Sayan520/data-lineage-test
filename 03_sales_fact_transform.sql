@@ -1,4 +1,3 @@
--- Insert into sales fact table
 INSERT INTO fact_sales (
     order_id, customer_id, product_id, order_date, total_amount
 )
@@ -10,7 +9,6 @@ SELECT
     o.total_amount
 FROM stg_orders o;
 
--- Insert only valid product sales
 INSERT INTO fact_sales (
     order_id, customer_id, product_id, order_date, total_amount
 )
@@ -24,7 +22,6 @@ FROM stg_orders s
 JOIN dim_products p
     ON s.product_id = p.product_id;
 
--- Merge to handle reprocessed orders
 MERGE INTO fact_sales f
 USING stg_orders s
 ON f.order_id = s.order_id
