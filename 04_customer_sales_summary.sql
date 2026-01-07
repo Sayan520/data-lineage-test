@@ -1,27 +1,31 @@
 INSERT INTO customer_sales_summary (
-    customer_id, total_orders, total_spent
+    customer_id,
+    total_orders,
+    total_spent
 )
 SELECT
-    c.customer_id,
-    COUNT(f.order_id) AS total_orders,
-    SUM(f.total_amount) AS total_spent
-FROM dim_customers c
-JOIN fact_sales f
-    ON c.customer_id = f.customer_id
-GROUP BY c.customer_id;
+    dim_customers.customer_id,
+    COUNT(fact_sales.order_id),
+    SUM(fact_sales.total_amount)
+FROM dim_customers
+JOIN fact_sales
+    ON dim_customers.customer_id = fact_sales.customer_id
+GROUP BY dim_customers.customer_id;
 
 INSERT INTO customer_sales_summary (
-    customer_id, total_orders, total_spent
+    customer_id,
+    total_orders,
+    total_spent
 )
 SELECT
-    f.customer_id,
-    COUNT(f.order_id),
-    SUM(f.total_amount)
-FROM fact_sales f
-GROUP BY f.customer_id
-HAVING SUM(f.total_amount) > 10000;
+    customer_id,
+    COUNT(order_id),
+    SUM(total_amount)
+FROM fact_sales
+GROUP BY customer_id
+HAVING SUM(total_amount) > 10000;
 
-MERGE INTO customer_sales_summary t
+MERGE INTO customer_sales_summary
 USING (
     SELECT
         customer_id,
@@ -29,9 +33,10 @@ USING (
         SUM(total_amount) AS total_spent
     FROM fact_sales
     GROUP BY customer_id
-) s
-ON t.customer_id = s.customer_id
+)
+ON customer_sales_summary.customer_id = customer_id
 WHEN MATCHED THEN
 UPDATE SET
-    t.total_orders = s.total_orders,
-    t.total_spent = s.total_spent;
+    total_orders = total_orders,
+    total_spent = total_spent;
+
