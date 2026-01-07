@@ -1,4 +1,3 @@
--- Insert transformed customer data into customer dimension
 INSERT INTO dim_customers (customer_id, full_name, email, country)
 SELECT 
     c.customer_id,
@@ -8,7 +7,6 @@ SELECT
 FROM src_customers c
 WHERE c.is_active = 1;
 
--- Insert new customers only (avoid duplicates)
 INSERT INTO dim_customers (customer_id, full_name, email, country)
 SELECT 
     s.customer_id,
@@ -20,7 +18,6 @@ LEFT JOIN dim_customers d
     ON s.customer_id = d.customer_id
 WHERE d.customer_id IS NULL;
 
--- Merge update for changed email or country
 MERGE INTO dim_customers d
 USING src_customers s
 ON d.customer_id = s.customer_id
