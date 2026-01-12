@@ -1,10 +1,3 @@
-INSERT INTO dim_products (product_id, product_name, category)
-SELECT DISTINCT
-    product_id,
-    product_name,
-    category
-FROM src_products;
-
 INSERT INTO stg_orders (
     order_id,
     customer_id,
